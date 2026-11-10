@@ -1,0 +1,103 @@
+libgpod 0.8.3 lyrics support (MHOD type 10) + expose ipod_write_artwork_db
+用于 PodSync：把同步歌词写进 iTunesDB，并让 itdbwrite 能调用 artwork 写入函数
+Apply: patch -p1 < patches/libgpod-0.8.3-lyrics.patch  (in libgpod-0.8.3 source root)
+
+--- a/src/db-artwork-parser.h
++++ b/src/db-artwork-parser.h
+@@ -32,7 +32,7 @@
+ #define iPodSong Itdb_Track
+ 
+ G_GNUC_INTERNAL int ipod_parse_artwork_db (Itdb_iTunesDB *db);
+-G_GNUC_INTERNAL int ipod_write_artwork_db (Itdb_iTunesDB *itdb);
++int ipod_write_artwork_db (Itdb_iTunesDB *itdb);
+ G_GNUC_INTERNAL char *ipod_db_get_artwork_db_path (const char *mount_point);
+ G_GNUC_INTERNAL char *ipod_db_get_photos_db_path (const char *mount_point);
+ G_GNUC_INTERNAL int ipod_parse_photo_db (Itdb_PhotoDB *photodb); 
+--- a/src/db-artwork-writer.c
++++ b/src/db-artwork-writer.c
+@@ -1137,7 +1137,7 @@
+ 
+ 
+ 
+-G_GNUC_INTERNAL int
++int
+ ipod_write_artwork_db (Itdb_iTunesDB *itdb)
+ {
+ 	iPodBuffer *buf;
+@@ -1239,7 +1239,7 @@
+ 	return 0;
+ }
+ #else
+-G_GNUC_INTERNAL int
++int
+ ipod_write_artwork_db (Itdb_iTunesDB *itdb)
+ {
+     return -1;
+--- a/src/itdb.h
++++ b/src/itdb.h
+@@ -1682,6 +1682,7 @@
+   guint8 remember_playback_position;
+   guint8 flag4;
+   guint64 dbid2;
++  gchar *lyrics;                 /* 歌词（MHOD type 10） */
+   guint8 lyrics_flag;
+   guint8 movie_flag;
+   guint8 mark_unplayed;
+--- a/src/itdb_itunesdb.c
++++ b/src/itdb_itunesdb.c
+@@ -176,6 +176,7 @@
+   /* Category - This is the category ("Technology", "Music", etc.) where
+      the podcast was located. Introduced in db version 0x0d. */
+   MHOD_ID_CATEGORY = 9,
++  MHOD_ID_LYRICS = 10,   /* 歌词（纯文本，可含 [mm:ss] 时间标记） */
+   MHOD_ID_COMPOSER = 12,
+   MHOD_ID_GROUPING = 13,
+   /* Description text (such as podcast show notes). Accessible by
+@@ -1636,6 +1637,7 @@
+   case MHOD_ID_FILETYPE:
+   case MHOD_ID_COMMENT:
+   case MHOD_ID_CATEGORY:
++  case MHOD_ID_LYRICS:
+   case MHOD_ID_COMPOSER:
+   case MHOD_ID_GROUPING:
+   case MHOD_ID_DESCRIPTION:
+@@ -4488,6 +4490,7 @@
+   case MHOD_ID_FILETYPE:
+   case MHOD_ID_COMMENT:
+   case MHOD_ID_CATEGORY:
++  case MHOD_ID_LYRICS:
+   case MHOD_ID_COMPOSER:
+   case MHOD_ID_GROUPING:
+   case MHOD_ID_DESCRIPTION:
+@@ -5206,6 +5209,13 @@
+ 	{
+ 	    mhod.type = MHOD_ID_ALBUMARTIST;
+ 	    mhod.data.string = track->albumartist;
++	    mk_mhod (fexp, &mhod);
++	    ++mhod_num;
++	}
++	if (track->lyrics && *track->lyrics)
++	{
++	    mhod.type = MHOD_ID_LYRICS;
++	    mhod.data.string = track->lyrics;
+ 	    mk_mhod (fexp, &mhod);
+ 	    ++mhod_num;
+ 	}
+--- a/src/itdb_track.c
++++ b/src/itdb_track.c
+@@ -236,6 +236,7 @@
+     g_free (track->genre);
+     g_free (track->filetype);
+     g_free (track->comment);
++    g_free (track->lyrics);
+     g_free (track->category);
+     g_free (track->composer);
+     g_free (track->grouping);
+@@ -334,6 +335,7 @@
+     tr_dup->genre = g_strdup (tr->genre);
+     tr_dup->filetype = g_strdup (tr->filetype);
+     tr_dup->comment = g_strdup (tr->comment);
++    tr_dup->lyrics = g_strdup (tr->lyrics);
+     tr_dup->category = g_strdup (tr->category);
+     tr_dup->composer = g_strdup (tr->composer);
+     tr_dup->grouping = g_strdup (tr->grouping);

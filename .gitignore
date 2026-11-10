@@ -1,0 +1,33 @@
+# ---- 构建产物（不要提交）----
+PodSync.app/
+dist/
+build/
+runtime/
+vendor/
+gpod/
+libplist/
+.build/
+.swift-module-cache/
+__pycache__/
+*.pyc
+.DS_Store
+
+# ---- 私人数据 / 音乐文件（绝对不要提交）----
+backup/
+sync-work/
+.downloads/
+.testhome/
+*.state.json
+*.part
+
+# ---- 开发调试产物 ----
+.shots/
+devplay.txt
+snapshot.txt
+
+# ---- 预编译二进制（由 scripts/ 生成，不提交）----
+itdbwrite
+itdbdump
+
+# ---- 本机开发脚本（含私有 API 调用，不随仓库分发）----
+devtools/
