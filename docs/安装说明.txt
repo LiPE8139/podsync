@@ -1,0 +1,50 @@
+PodSync（macOS · Apple Silicon 版 · v1.6.0）
+=========================================
+
+【系统要求】
+- Apple Silicon Mac（M1/M2/M3/M4 等）；暂不提供 Intel 版本
+- macOS 14.0 或更高
+- 需要一台 iPod（原厂固件 / Rockbox·CrazyPod 均可），目标卷为 FAT32
+
+【安装】
+1. 解压 PodSync-macOS-arm64.zip
+2. 把「PodSync.app」拖进「应用程序」文件夹
+3. 首次打开：Finder 里右键 App →「打开」→ 再点「打开」
+   （若提示「已损坏」，打开「终端」执行：
+    sudo xattr -dr com.apple.quarantine "/Applications/PodSync.app"
+   ）
+4. 首次连接 iPod 时，若系统询问「允许访问可移除宗卷」，请选择允许
+5. 本压缩包里的 LICENSE / THIRD_PARTY_NOTICES.md / licenses/ 是开源许可文件，可保留备查
+
+【使用】
+- 下载音乐：搜索 → 双击试听 → 点 ☆ 收藏 → 下载到收件箱
+- 我喜欢的音乐：右侧「音乐库」抽屉（⌘L）→「我喜欢」页签
+- 查看某歌手的歌：右键任意歌曲 →「查看 歌手名」（直接在下载页展示）
+- 同步：插上 iPod →「同步到 iPod」→ 勾选后「同步选中」或「同步全部未同步」
+- 曲库为单份 ALAC：原厂固件与 Rockbox 共用同一批文件，下载时自动转成 ALAC 16/44.1
+- 设置（⌘,）里可切换语言（中文/English）、主题、封面大小等
+
+【数据位置】
+- 配置/收藏/历史：~/Library/Application Support/iPodSync
+- 收件箱：~/Music/iPod-Inbox
+
+【卸载】
+- 删除 App 即可；如需彻底清理，再删除上面两个目录
+
+【隐私】
+- 无任何遥测；联网仅用于 COCO 音乐站搜索/下载、歌手别名查询、封面与歌词
+- 搜索/下载走第三方站点的 HTTP 接口，请注意网络安全风险
+
+【开源与许可】
+- 本项目代码：GPL-3.0-or-later（完整文本见 LICENSE）
+  原因：Python 组件依赖 GPL 的 mutagen，且内嵌 GPLv3 构建的 FFmpeg
+- 第三方组件清单与许可文本：THIRD_PARTY_NOTICES.md、licenses/
+- 内嵌 libgpod 歌词补丁：patches/libgpod-0.8.3-lyrics.patch（随源码仓库提供）
+- 内嵌组件：FFmpeg 9.0.2（GPL）、libgpod/libplist/GLib/gettext（LGPL）、
+  mutagen 1.48.1（GPL-2.0+）、Python 3.12（PSF）、OpenSSL（Apache-2.0）等
+
+【声明】
+- 「PodSync」仅为本项目名称，与 GitHub 上同名项目（owen-tariq/PodSync）无关
+- 「iPod」是 Apple Inc. 的商标；本项目与 Apple 无任何隶属关系
+- 本工具仅用于备份/整理你合法拥有的音乐；请遵守当地法律与音乐服务条款
+- 会写入 iPod 数据库，操作前请先备份设备，风险自担
