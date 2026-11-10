@@ -41,7 +41,14 @@ FFmpeg 对应源码：按 `ffmpeg -version` 输出的 `configuration:` 行在 <h
 libgpod/libplist/glib 等 LGPL 组件的源码同样可按 `scripts/build_toolchain.sh` 中的版本与补丁重建；
 如需逐字节对应的源码包，请提交 issue，我们会提供 tarball。
 
-## 三、Apple 相关
+## 三、项目原创素材
+
+- `gui/assets/ipod*.png`（App 内设备剪影图）由 [tools/make_ipod_assets.py](tools/make_ipod_assets.py)
+  用 Pillow 绘制，**项目原创，CC0-1.0（公有领域贡献）**，不含任何厂商产品照片/Logo。
+- `tools/AppIcon.icns` 为本项目 App 图标（作者提供）。
+- UI 中的 SF Symbols 图标来自系统字体，按 Apple 的 SF Symbols 许可在 Apple 平台 App 内使用。
+
+## 四、Apple 相关
 
 - SF Symbols 为 Apple 提供给 Apple 平台 App 使用的系统图标。
 - 「iPod」是 Apple Inc. 的商标。本项目仅用于说明兼容设备，与 Apple 无任何隶属关系。
