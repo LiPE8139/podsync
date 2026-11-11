@@ -3,10 +3,16 @@ name: CI
 on:
   push:
   pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   syntax-and-build:
-    runs-on: macos-14
+    # 需要带 macOS 26 SDK 的 runner；必要时改为 macos-26
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -21,6 +27,12 @@ jobs:
 
       - name: 编译 SwiftUI 界面
         run: |
+          SDK_MAJOR="$(xcrun --show-sdk-version | cut -d. -f1)"
+          echo "SDK major: $SDK_MAJOR"
+          if [ "$SDK_MAJOR" -lt 26 ]; then
+            echo "当前 SDK < 26，缺少 Liquid Glass API，跳过 GUI 编译检查"
+            exit 0
+          fi
           mkdir -p PodSync.app/Contents/MacOS PodSync.app/Contents/Resources
           xcrun swiftc -O -swift-version 5 -parse-as-library \
             -target arm64-apple-macos14.0 \
